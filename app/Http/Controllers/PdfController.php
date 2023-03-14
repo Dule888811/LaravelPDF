@@ -24,7 +24,8 @@ class PdfController extends  Controller
         $file = $folderPath . uniqid() .  '.png';
         file_put_contents($file, $decoded_image);
         $pdf = $request->file;
-        dd($pdf);
+        $uniqueFileName = $pdf->getClientOriginalName();
+        $pdf->move(public_path('pdf') . $uniqueFileName);
 
     }
 }
