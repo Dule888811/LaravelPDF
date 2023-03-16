@@ -25,7 +25,7 @@ class PdfController extends  Controller
         $pdf = $request->file;
         $uniqueFileName = $pdf->getClientOriginalName();
         $pdf->move(public_path('pdf/') . $uniqueFileName);
-        $pdfPublicPath = public_path('pdf/' . $uniqueFileName);
+        $pdfPublicPath = public_path('pdf/' . $uniqueFileName . '/' . pathinfo($pdf)['basename']);
         $outputPdfFile = public_path('pdf/' . $uniqueFileName);
         $this->fillPDFFile($pdfPublicPath,$outputPdfFile,$file);
 
