@@ -17,3 +17,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('/storePDF','App\Http\Controllers\PdfController@storePdf')->name('storePdf');
+Route::get('/fill-pdf','App\Http\Controllers\PdfController@fillPDFFile')->name('fillPdf');
+

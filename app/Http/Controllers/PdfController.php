@@ -6,10 +6,9 @@ namespace App\Http\Controllers;
 
 
 
-
+use setasign\Fpdi\Fpdi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use setasign\Fpdi\Fpdi;
 class PdfController extends  Controller
 {
     public function storePdf(Request $request)
@@ -24,7 +23,19 @@ class PdfController extends  Controller
         $file = $folderPath . uniqid() .  '.png';
         file_put_contents($file, $decoded_image);
         $pdf = $request->file;
-        dd($pdf);
+        $uniqueFileName = $pdf->getClientOriginalName();
+        $pdf->move(public_path('pdf/') . $uniqueFileName);
+        $pdfPublicPath = public_path('pdf/' . $uniqueFileName);
+        $outputPdfFile = public_path('pdf/' . $uniqueFileName);
+        $this->fillPDFFile($pdfPublicPath,$outputPdfFile,$file);
+
+    }
+    public function fillPDFFile($pdf,$pdfOutput,$image)
+    {
+        $pdfOutput = new Fpdi();
+        $pdfOutput->setSourceFile($pdf);
+        $pdfOutput->Image($image);
+        return $pdfOutput->Output($pdfOutput);
     }
 
 }
