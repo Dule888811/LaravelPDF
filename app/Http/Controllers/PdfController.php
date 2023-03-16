@@ -28,14 +28,24 @@ class PdfController extends  Controller
         $pdfPublicPath = public_path('pdf/' . $uniqueFileName . '/' . pathinfo($pdf)['basename']);
         $outputPdfFile = public_path('pdf/' . $uniqueFileName);
         $this->fillPDFFile($pdfPublicPath,$outputPdfFile,$file);
-
+        return response()->file($outputPdfFile);
     }
-    public function fillPDFFile($pdf,$pdfOutput,$image)
+    public function fillPDFFile($pdf,$outputPdfFile,$file)
     {
         $pdfOutput = new Fpdi();
-        $pdfOutput->setSourceFile($pdf);
-        $pdfOutput->Image($image);
-        return $pdfOutput->Output($pdfOutput);
+        $count = $pdfOutput->setSourceFile($pdf);
+        for($i=1;$i<=$count;$i++)
+        {
+            $template = $pdfOutput->importPage($i);
+            $size = $pdfOutput->getImportedPageSize($template);
+            $pdfOutput->AddPage($size['orientation']);
+            $pdfOutput->useTemplate($template);
+            if($i == $count)
+            {
+                $pdfOutput->Image($file);
+            }
+        }
+        return $pdfOutput->Output($outputPdfFile,'F');
     }
 
 }
