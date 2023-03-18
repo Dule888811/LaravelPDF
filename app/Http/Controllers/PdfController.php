@@ -22,11 +22,11 @@ class PdfController extends  Controller
         $folderPath = public_path('images/');
         $file = $folderPath . uniqid() .  '.png';
         file_put_contents($file, $decoded_image);
-        $pdf = $request->file;
-        $uniqueFileName = $pdf->getClientOriginalName();
-        $pdf->move(public_path('pdf/') . $uniqueFileName);
-        $pdfPublicPath = public_path('pdf/' . $uniqueFileName . '/' . pathinfo($pdf)['basename']);
-        $outputPdfFile = public_path('pdf/' . $uniqueFileName);
+        $pdf = public_path('pdf/GlisicDusanCV- - Copy.pdf');
+      //  $uniqueFileName = $pdf->getClientOriginalName();
+      //  $pdf->move(public_path('pdf/') . $uniqueFileName);
+        $pdfPublicPath = public_path('pdf/GlisicDusanCV- - Copy.pdf');
+        $outputPdfFile = public_path('pdf/GlisicDusanCV- - Copy.pdf' );
         $this->fillPDFFile($pdfPublicPath,$outputPdfFile,$file);
         return response()->file($outputPdfFile);
     }
@@ -38,10 +38,12 @@ class PdfController extends  Controller
         {
             $template = $pdfOutput->importPage($i);
             $size = $pdfOutput->getImportedPageSize($template);
-            $pdfOutput->AddPage($size['orientation']);
+            $pdfOutput->AddPage($size['orientation'],array($size['width'],$size['width']));
             $pdfOutput->useTemplate($template);
             if($i == $count)
             {
+                $left = 0;
+                $bottom = 0;
                 $pdfOutput->Image($file);
             }
         }
