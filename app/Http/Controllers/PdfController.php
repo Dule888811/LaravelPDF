@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 
 
+use Illuminate\Support\Facades\Storage;
 use setasign\Fpdi\Fpdi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -22,11 +23,14 @@ class PdfController extends  Controller
         $folderPath = public_path('images/');
         $file = $folderPath . uniqid() .  '.png';
         file_put_contents($file, $decoded_image);
-        $pdf = public_path('pdf/GlisicDusanCV- - Copy.pdf');
-      //  $uniqueFileName = $pdf->getClientOriginalName();
-      //  $pdf->move(public_path('pdf/') . $uniqueFileName);
-        $pdfPublicPath = public_path('pdf/GlisicDusanCV- - Copy.pdf');
-        $outputPdfFile = public_path('pdf/GlisicDusanCV- - Copy.pdf' );
+        $pdf = $request->file;
+        $uniqueFileName = $pdf->getClientOriginalName();
+        $pdfFolder = public_path('pdf/' . $uniqueFileName);
+        file_put_contents($pdfFolder, $pdf);
+
+
+        $pdfPublicPath = public_path('pdf/' . $uniqueFileName);
+        $outputPdfFile = public_path('pdf/' . $uniqueFileName) . 'Output';
         $this->fillPDFFile($pdfPublicPath,$outputPdfFile,$file);
         return response()->file($outputPdfFile);
     }
@@ -42,8 +46,6 @@ class PdfController extends  Controller
             $pdfOutput->useTemplate($template);
             if($i == $count)
             {
-                $left = 0;
-                $bottom = 0;
                 $pdfOutput->Image($file);
             }
         }
